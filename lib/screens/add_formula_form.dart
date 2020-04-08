@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tex/flutter_tex.dart';
 import 'package:formulas_cms/blocs/add_formula_bloc.dart';
 import 'package:formulas_cms/blocs/app_state_provider.dart';
+import 'package:formulas_cms/blocs/chapter_bloc.dart';
 import 'package:formulas_cms/blocs/formula_bloc.dart';
 import 'package:formulas_cms/models/models.dart';
 import 'package:formulas_cms/utils/colors.dart';
@@ -18,6 +19,7 @@ class _AddFormulaFormState extends State<AddFormulaForm> {
   AddFormulaBloc addFromBloc;
   FormulaBloc formulaBloc;
   TextEditingController _formulaController;
+  ChapterBloc _chapterBloc;
 
   @override
   void initState() {
@@ -25,6 +27,7 @@ class _AddFormulaFormState extends State<AddFormulaForm> {
     addFromBloc = AddFormulaBloc();
     _formulaController = TextEditingController();
     formulaBloc = FormulaBloc();
+    _chapterBloc = ChapterBloc();
   }
 
   @override
@@ -44,6 +47,43 @@ class _AddFormulaFormState extends State<AddFormulaForm> {
       ),
       body: ListView(
         children: <Widget>[
+          Container(
+            child: CupertinoButton(
+                child: Text('Load Chapters'),
+                onPressed: () async {
+                  bool res = await showDialog<bool>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Are you sure to load chapters'),
+                          actions: <Widget>[
+                            FlatButton(
+                                onPressed: () => Navigator.pop(context, true),
+                                child: Text('Yes')),
+                            SizedBox(
+                              width: 25,
+                            ),
+                            FlatButton(
+                                onPressed: () => Navigator.pop(context, false),
+                                child: Text('No'))
+                          ],
+                        );
+                      });
+
+                  if (res == true) {
+                    LoadingOverlay.showLoadingOverlay(context);
+                    var resp = await _chapterBloc.addChapters();
+                    LoadingOverlay.hideOverLay();
+                    if (resp) {
+                      Toast().show('Chapters loaded', context);
+                    } else {
+                      Toast().show(
+                          'Chapters failed to load, please clear chapters collection on db and try again',
+                          context);
+                    }
+                  }
+                }),
+          ),
           Row(
             children: <Widget>[
               Container(

@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:formulas_cms/actions/actions.dart';
 import 'package:formulas_cms/models/api_response.dart';
 import 'package:formulas_cms/models/models.dart';
@@ -22,6 +24,16 @@ class ChapterAction {
       return (apiResponse.data as List).map((s) => Chapter.fromJson(s)).toList();
     }
     return null;
+  }
+
+  Future<Chapter> addChapter(Map<String, String> body) async{
+    var resp = await BaseActions().apiRequest(HttpRequest.POST, '/chapter', json.encode(body), null).timeout(Duration(seconds: 15));
+    var apiResponse = ApiResponse.fromJson(resp.body);
+    if(apiResponse.hasData) {
+      return Chapter.fromJson(apiResponse.data);
+    }
+
+  return null;
   }
   
 }

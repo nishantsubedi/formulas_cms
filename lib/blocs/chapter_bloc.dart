@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:formulas_cms/actions/actions.dart';
+import 'package:formulas_cms/data/chapters.dart';
 import 'package:formulas_cms/models/models.dart';
-
 
 class ChapterBloc extends Object {
   ValueNotifier<List<Chapter>> chapters = ValueNotifier(null);
@@ -50,5 +50,22 @@ class ChapterBloc extends Object {
   resetSearch() {
     this.searchQuery.value = '';
     this.searchResults.value = null;
+  }
+
+  Future<bool> addChapters() async {
+    var parentChapters = getParentChapters();
+    try {
+      for (var parentChapter in parentChapters) {
+        var pResp = await ChapterAction().addChapter({
+          "name": parentChapter.name,
+          "description": parentChapter.description,
+          "course_id": parentChapter.courseId,
+          "parent_chapter_id": null
+        });
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }
