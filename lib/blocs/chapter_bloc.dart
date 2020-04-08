@@ -62,6 +62,17 @@ class ChapterBloc extends Object {
           "course_id": parentChapter.courseId,
           "parent_chapter_id": null
         });
+
+        var childChapters = getChildChapters(parentChapter.name);
+
+        for (var childChapter in childChapters) {
+          var cResp = await ChapterAction().addChapter({
+            "name": childChapter.name,
+            "description": childChapter.description,
+            "course_id": childChapter.courseId,
+            "parent_chapter_id": pResp.id
+          });
+        }
       }
       return true;
     } catch (e) {
