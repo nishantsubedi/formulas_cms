@@ -60,6 +60,7 @@ class ChapterBloc extends Object {
           "name": parentChapter.name,
           "description": parentChapter.description,
           "course_id": parentChapter.courseId,
+          "image": null,
           "parent_chapter_id": null
         });
 
@@ -70,6 +71,7 @@ class ChapterBloc extends Object {
             "name": childChapter.name,
             "description": childChapter.description,
             "course_id": childChapter.courseId,
+            "image": childChapter.image,
             "parent_chapter_id": pResp.id
           });
         }
